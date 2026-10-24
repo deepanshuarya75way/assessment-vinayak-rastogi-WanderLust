@@ -19,7 +19,7 @@ import User from "./models/user.js"
 
 
 const app = express();
-const port = 8080;
+const port = 5500;
 const dbURL = process.env.ATLAS_URL;
 
 

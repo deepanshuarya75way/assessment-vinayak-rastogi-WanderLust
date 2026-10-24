@@ -1,4 +1,12 @@
 import Listing from "../models/listing.js";
+import Lead from "../models/lead.js";
+
+const parseIsAvailable = (val)=>{
+  if(Array.isArray(val)){
+    return val.includes("true")||val.includes(true)||val.includes("on")
+  }
+  return val==="true"||val===true||val==="on"
+}
 
 const index = async (req, res) => {
   const allListing = await Listing.find({});
@@ -34,6 +42,7 @@ const create = async (req,res, next)=>{
   newListing.owner = req.user._id;
   newListing.image = {url, filename}
   newListing.geometry = {type: "Point", coordinates};
+  newListing.isAvailable = parseIsAvailable(req.body.listing?.isAvailable);
   let geotude=await newListing.save();
   console.log(geotude)
   req.flash("success", "Listing created successfully!")
@@ -88,6 +97,7 @@ const update = async (req,res)=>{
     type: "Point",
     coordinates: geoData.features[0].geometry.coordinates
   };
+  req.body.listing.isAvailble = parseIsAvailable(req.body.listing?.isAvailable);
   let listing = await Listing.findByIdAndUpdate(id,{...req.body.listing});
 
   if(typeof req.file !== "undefined"){
@@ -111,6 +121,33 @@ const deleteRoute = async (req,res)=>{
   res.redirect("/listings")
 }
 
+const createLead = async (req, res)=>{
+  const {id} = req.params;
+  const listing = await Listing.findById(id);
+
+  if(!listing){
+    req.flash("error", "Listing not found.");
+    return res.redirect("/listings");
+  }
+
+  const {name, email, phone, message} = req.body.lead || req.body;
+
+  if(!name|| !email|| !message){
+    req.flash("error", "Please fill in your name, email, phone, message.");
+    return res.redirect(`listing/${id}`);
+  }
+
+  const lead = new Lead({
+    listing:listing._id,
+    name, email, phone: phone || "", message,
+  });
+
+  await lead.save();
+  req.flash("success", "Thanks! We have captured your intrest for this listing.");
+  return res.redirect(`listing/${id}`);
+}
 
 
-export {index, newRoute, create, showListing, edit, update, deleteRoute}
+
+
+export {index, newRoute, create, showListing, edit, update, deleteRoute, createLead}

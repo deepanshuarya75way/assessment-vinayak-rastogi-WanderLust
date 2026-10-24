@@ -31,6 +31,12 @@ const isOwner =  async (req,res,next)=>{
 }
 
 const validateListing = (req,res,next)=>{
+
+  if(req.body.listing){
+    const value = req.body.listing.isAvailable;
+    req.body.listing.isAvailable = value==="true"||value===true||value==="on";
+  }
+
   let {error}= listingSchema.validate(req.body);
   if(error){
     let errMsg= error.details.map((el)=> el.message).join(",");

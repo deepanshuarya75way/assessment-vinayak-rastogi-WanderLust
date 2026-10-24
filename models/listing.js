@@ -26,6 +26,14 @@ const listingSchema = new Schema({
   location: String,
   country: String,
 
+  isAvailable:{
+    type:Boolean,
+    default:true,
+  },
+  leads:[{
+    type:Schema.Types.ObjectId,
+    ref:"Lead",
+  }],
   reviews: [{
     type: Schema.Types.ObjectId,
     ref:"Review"
