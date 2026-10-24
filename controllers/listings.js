@@ -1,5 +1,6 @@
 import Listing from "../models/listing.js";
 import Lead from "../models/lead.js";
+import {matchLeads} from "../utils/matchLeads.js";
 
 const parseIsAvailable = (val)=>{
   if(Array.isArray(val)){
@@ -42,9 +43,13 @@ const create = async (req,res, next)=>{
   newListing.owner = req.user._id;
   newListing.image = {url, filename}
   newListing.geometry = {type: "Point", coordinates};
-  newListing.isAvailable = parseIsAvailable(req.body.listing?.isAvailable);
   let geotude=await newListing.save();
   console.log(geotude)
+  try{
+    await matchLeads(newListing);
+  }catch(e){
+    console.error("Error processing lead matches", e);
+  }
   req.flash("success", "Listing created successfully!")
   return res.redirect("/listings")
 }

@@ -26,7 +26,6 @@ router.get("/new", isLoggedin, wrapAsync(newRoute))
 router.post("/:id/leads", wrapAsync(createLead));
 
 
-
 //show / update / delete
 router
     .route("/:id")

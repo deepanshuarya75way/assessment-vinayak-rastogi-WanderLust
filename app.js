@@ -1,4 +1,4 @@
-import dotenv from "dotenv/config"
+import "dotenv/config"
 import express from "express";
 import path from "path";
 import mongoose from "mongoose";
@@ -15,8 +15,7 @@ import flash from "connect-flash";
 import passport from "passport";
 import LocalStrategy from "passport-local"
 import User from "./models/user.js"
-
-
+import leadRouter from "./routes/lead.js";
 
 const app = express();
 const port = 5500;
@@ -102,6 +101,7 @@ app.use((req,res,next)=>{
 app.use("/listings", listingRouter);
 app.use("/listings/:id/reviews", reviewRouter);
 app.use("/", userRouter)
+app.use("/leads", leadRouter);
 
 app.use( (req,res,next)=>{
   next(new ExpressError(404,"Page not found!"))

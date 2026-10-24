@@ -35,13 +35,7 @@
                     <input id="image" type="file" name="listing[image]" value="<%= listing.image %>" class="form-control">
                 </div>
 
-                <div class = "form-check form-switch mb-3">
-                    <input type="hidden" name="listing[isAvailable]" value="false"/>
-                    <input class="form-check-input switch-btn" type="checkbox" value="true" name="listing[isAvailable]"  id="listingAvailable" <%= listing.isAvailable? "checked":"" %>>
-                    <label class="form-check-label" for="listingAvailable">
-                        Listing is Available
-                    </label>
-                </div>
+                
                 
                 <div class="row">
                     <div class="mb-3 col-md-4">

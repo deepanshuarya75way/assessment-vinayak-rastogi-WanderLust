@@ -1,15 +1,7 @@
 import mongoose from 'mongoose';
 const {Schema} = mongoose;
 
-import Listing from './listing.js';
-
 const leadSchema = new Schema({
-  listing:{
-    type:Schema.Types.ObjectId,
-    ref:"Listing",
-    required:true,
-    index:true
-  },
   name:{
     type:String,
     trim:true,
@@ -19,33 +11,19 @@ const leadSchema = new Schema({
     type:String,
     trim:true,
     required:true,
+    lowercase:true
 
   },
-  phone:{
+  searchCriteria:{
+    location:String,
+    country:String,
+  },
+  status:{
     type:String,
-    trim:true,
-    default:""
-  },
-  message:{
-    type:String,
-    trim:true,
-    required:true
-  },
-  createdAt:{
-    type:Date,
-    default:Date.now
+    enum:["pending", "matched", "closed"],
+    default:"pending"
   }
-});
-
-leadSchema.post("save", async ()=>{
-  const listing = await Listing.findById(this.listing);
-
-  if(listing && !listing.leads.includes(this._id)){
-    listing.leads.push(this._id);
-
-    await listing.save();
-  }
-});
+}, {timestamps:true});
 
 const Lead = mongoose.model("Lead", leadSchema);
 
